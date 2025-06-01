@@ -1,0 +1,18 @@
+Date: 18/05/2023
+1- function 'load_mesh' need correction. Same function can be used to read the static solution from the mesh object 'static'.
+2- function 'breaking_condition' breaks the bond based on tensile force on the interface bonds.
+3- function 'forming_condition' forms the bond when the distance between the nodes is less than equal to lattice spacing, and vertical distance is between 0.9 to 1.1 times the interface equilibrium length in unloaded state.
+4- function 'dynamic_solver' needed correction. It does not compute the interface force function at each time step.
+5- Equilibrium solution cannot be obtained using current spring force for the interface bonds. It should be linearized with respect to initial configuration.
+6- function 'linear_interface_force' is created for 'dynamic_solver'.
+
+Date: 19/05/2023
+7- run simulation with the following parameters: Initially, the vertical displacement of 0.1 is applied to the top boundary of the upper plate.  Right boundary of the top is moved with velocity of 0.01 after equilibrium. Both plates have same stiffness of 2.84 with Poisson ratio of 0.2. Interface bond has the stiffness of 0.3. Critical threshold of 0.08 is set that is slightly higher than maximum interface force at a steady state. File name: M3_T1_60X300
+**- One blunder found in the function 'interface_dynamics'. The interface force is not updated at each time step, rather it was only updated when there is bond breaking or reforming events. This is the main reason for initial vibration observed so far. Same issue is there is MODEL 2. Now, I have run all the simulation again and analyze the results.
+8- with this correction, re-run (7). File name:M3_T1_60X300
+10- We are running two test now.
+10.1- First, we apply the vertical downward displacement of 0.2 to the top boundary of the upper plate, and later the right boundary of the upper plate is complemented by driving velocity of 0.01. The bulk stiffness is 2.84 with Poisson ratio of 0.2, and the interface bond has stiffness of 0.3. The critical threshold is set to 0.02. File name: M3_T4_60X300
+10.2- Second, we apply the vertical downward displacement of 0.1 to the top boundary of the upper plate, and remaining condition remains same. File name: M3_T5_60X300
+**- When right boundary of the top plate is driven, then the right region near to the loading lift off, while the left region moves down. In the first case, the downward displacement of 0.2 causes the left region to move down than 0.9 times thickness (the  lower bound for bond formation) result no bond formation in the left region during sliding. The opposite occur in the second case, the right region lift-off implying crossing the upper limit of bond formation. Thus, the model does not implicitly take normal pressure effect into account.
+
+
